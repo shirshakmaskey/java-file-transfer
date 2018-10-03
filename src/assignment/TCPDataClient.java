@@ -47,6 +47,7 @@ public class TCPDataClient {
             jfc.showOpenDialog(null);
             files = jfc.getSelectedFiles();
             q = new LinkedList<>(Arrays.asList(files));
+            System.out.println(java.time.LocalTime.now());   
             for(i=1;i<=nc;i++){
                 new Thread(sendFile).start();
             }
@@ -90,7 +91,7 @@ class SendFiles implements Runnable{
                       switch (Integer.parseInt(new String(cmd_buff))) {
                           case 125:
                               current_file_pointer = Long.valueOf(new String(received_buff));
-                              int buff_len = (int) (rw.length() - current_file_pointer < 16384 ? rw.length() - current_file_pointer : 16384);
+                              int buff_len = (int) (rw.length() - current_file_pointer < 65536 ? rw.length() - current_file_pointer : 65536);
                               byte[] temp_buff = new byte[buff_len];
                               if (current_file_pointer != rw.length()) {
                                   rw.seek(current_file_pointer);
@@ -120,6 +121,7 @@ class SendFiles implements Runnable{
         } catch (IOException ex) {
             Logger.getLogger(TCPDataClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+      System.out.println(java.time.LocalTime.now());  
     }
     
         private byte[] CreateDataPacket(byte[] cmd,byte[] data){
